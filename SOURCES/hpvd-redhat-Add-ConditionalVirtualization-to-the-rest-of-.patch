@@ -1,0 +1,49 @@
+From 3eb64f25afdf65d9999d155d8c89327cf9d27036 Mon Sep 17 00:00:00 2001
+From: Mohammed Gamal <mgamal@redhat.com>
+Date: Mon, 15 Aug 2022 17:38:37 +0200
+Subject: [PATCH 2/2] redhat: Add ConditionalVirtualization to the rest of
+ systemd units
+
+RH-Author: Mohamed Gamal Morsy <mmorsy@redhat.com>
+RH-MergeRequest: 3: hypervkvpd.service: ordering fixes
+RH-Commit: [2/2] 6638ac3cfcff63e664d6ba86772a4bdfe45d2084
+RH-Bugzilla: 2115761
+RH-Acked-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+RH-Acked-by: Cathy Avery <cavery@redhat.com>
+
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=2115761
+
+Add ConditionalVirtualization to the rest of systemd units to make sure
+they're started when running in Azure/Hyper-V.
+
+Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+---
+ hypervfcopyd.service | 1 +
+ hypervvssd.service   | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/hypervfcopyd.service b/hypervfcopyd.service
+index dd14a97..aab4b6b 100644
+--- a/hypervfcopyd.service
++++ b/hypervfcopyd.service
+@@ -1,5 +1,6 @@
+ [Unit]
+ Description=Hyper-V FCOPY daemon
++ConditionVirtualization=microsoft
+ BindsTo=sys-devices-virtual-misc-vmbus\x21hv_fcopy.device
+ IgnoreOnIsolate=1
+ 
+diff --git a/hypervvssd.service b/hypervvssd.service
+index 1e5ff43..6a0fad0 100644
+--- a/hypervvssd.service
++++ b/hypervvssd.service
+@@ -1,5 +1,6 @@
+ [Unit]
+ Description=Hyper-V VSS daemon
++ConditionVirtualization=microsoft
+ BindsTo=sys-devices-virtual-misc-vmbus\x21hv_vss.device
+ IgnoreOnIsolate=1
+ 
+-- 
+2.31.1
+
