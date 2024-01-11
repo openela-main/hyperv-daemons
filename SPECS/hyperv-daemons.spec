@@ -13,7 +13,7 @@
 
 Name:     hyperv-daemons
 Version:  0
-Release:  0.41%{?snapver}%{?dist}
+Release:  0.42%{?snapver}%{?dist}
 Summary:  Hyper-V daemons suite
 
 License:  GPLv2
@@ -58,6 +58,8 @@ Patch9: hpvd-redhat-hv_set_if_config-Workaround-for-gateway-numbe.patch
 Patch10: hpvd-tools-hv-Remove-an-extraneous-the.patch
 # For bz#2139457 - [Hyper-V][RHEL9.2] Update Hyper-V-Daemons
 Patch11: hpvd-tools-hv-kvp-remove-unnecessary-void-conversions.patch
+# For bz#2218931 - [Hyper-V] [RHEL-9] /usr/sbin/vmbus_testing python script prints: "SyntaxWarning: "is" with a literal."
+Patch12: hpvd-vmbus_testing-fix-wrong-python-syntax-for-integer-va.patch
 
 # Source-git patches
 
@@ -168,6 +170,7 @@ cp -pvL %{SOURCE301} lsvmbus
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 
 %build
 # HYPERV KVP DAEMON
@@ -285,6 +288,11 @@ fi
 %{_sbindir}/vmbus_testing
 
 %changelog
+* Mon Jul 10 2023 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.42.20190303git
+- hpvd-vmbus_testing-fix-wrong-python-syntax-for-integer-va.patch [bz#2218931]
+- Resolves: bz#2218931
+  ([Hyper-V] [RHEL-9] /usr/sbin/vmbus_testing python script prints: "SyntaxWarning: "is" with a literal.")
+
 * Mon Nov 21 2022 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.41.20190303git
 - hpvd-redhat-hv_set_if_config-Workaround-for-gateway-numbe.patch [bz#2122115]
 - hpvd-tools-hv-Remove-an-extraneous-the.patch [bz#2139457]
