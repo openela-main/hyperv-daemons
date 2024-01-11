@@ -1,0 +1,54 @@
+From 33725de60efa5e867ed73d2404d316785d0e4bb5 Mon Sep 17 00:00:00 2001
+From: Mohammed Gamal <mgamal@redhat.com>
+Date: Wed, 20 Jul 2022 11:48:40 +0200
+Subject: [PATCH 1/2] hypervkvpd.service: ordering fixes
+
+RH-Author: Mohamed Gamal Morsy <mmorsy@redhat.com>
+RH-MergeRequest: 3: hypervkvpd.service: ordering fixes
+RH-Commit: [1/2] f5bec088f7cf4afd641a2d7184a4e29cd1734bf4
+RH-Bugzilla: 2115761
+RH-Acked-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+RH-Acked-by: Cathy Avery <cavery@redhat.com>
+
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=2115761
+
+	From 8dcff588c8eb1ab3119c6b0acead03189814b955 Mon Sep 17 00:00:00 2001
+	From: Chris Patterson <cpatterson@microsoft.com>
+	Date: Jul 01 2022 14:36:25 +0000
+	Subject: hypervkvpd.service: ordering fixes
+
+	- Only start kvpd under Hyper-V.
+
+	- Minimize dependencies for kvpd by removing the unnecessary
+	network.target requirement, but add kvp device and mount
+	requirements.
+
+	Start before cloud-init-local.service which relies on kvpd
+	for Azure.
+
+	Signed-off-by: Chris Patterson <cpatterson@microsoft.com>
+
+Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+---
+ hypervkvpd.service | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/hypervkvpd.service b/hypervkvpd.service
+index 36ee11c..40dff13 100644
+--- a/hypervkvpd.service
++++ b/hypervkvpd.service
+@@ -1,7 +1,10 @@
+ [Unit]
+ Description=Hyper-V KVP daemon
++ConditionVirtualization=microsoft
+ BindsTo=sys-devices-virtual-misc-vmbus\x21hv_kvp.device
+-After=network.target
++After=sys-devices-virtual-misc-vmbus\x21hv_kvp.device
++RequiresMountsFor=/var/lib/hyperv
++Before=cloud-init-local.service
+ IgnoreOnIsolate=1
+ 
+ [Service]
+-- 
+2.31.1
+
