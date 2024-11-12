@@ -13,7 +13,7 @@
 
 Name:     hyperv-daemons
 Version:  0
-Release:  0.42%{?snapver}%{?dist}
+Release:  0.43%{?snapver}%{?dist}
 Summary:  Hyper-V daemons suite
 
 License:  GPLv2
@@ -60,6 +60,14 @@ Patch10: hpvd-tools-hv-Remove-an-extraneous-the.patch
 Patch11: hpvd-tools-hv-kvp-remove-unnecessary-void-conversions.patch
 # For bz#2218931 - [Hyper-V] [RHEL-9] /usr/sbin/vmbus_testing python script prints: "SyntaxWarning: "is" with a literal."
 Patch12: hpvd-vmbus_testing-fix-wrong-python-syntax-for-integer-va.patch
+# For RHEL-9902 - [Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg
+Patch13: hpvd-hv-hv_kvp_daemon-Support-for-keyfile-based-connectio.patch
+# For RHEL-9902 - [Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg
+Patch14: hpvd-hv-hv_kvp_daemon-Some-small-fixes-for-handling-NM-ke.patch
+# For RHEL-9902 - [Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg
+Patch15: hpvd-hv-hv_kvp_daemon-Handle-IPv4-and-Ipv6-combination-fo.patch
+# For RHEL-9902 - [Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg
+Patch16: hpvd-Changes-for-adding-keyfile-support-in-RHEL-specific-.patch
 
 # Source-git patches
 
@@ -171,6 +179,10 @@ cp -pvL %{SOURCE301} lsvmbus
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
 
 %build
 # HYPERV KVP DAEMON
@@ -288,6 +300,14 @@ fi
 %{_sbindir}/vmbus_testing
 
 %changelog
+* Thu Apr 25 2024 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.43.20190303git
+- hpvd-hv-hv_kvp_daemon-Support-for-keyfile-based-connectio.patch [RHEL-9902]
+- hpvd-hv-hv_kvp_daemon-Some-small-fixes-for-handling-NM-ke.patch [RHEL-9902]
+- hpvd-hv-hv_kvp_daemon-Handle-IPv4-and-Ipv6-combination-fo.patch [RHEL-9902]
+- hpvd-Changes-for-adding-keyfile-support-in-RHEL-specific-.patch [RHEL-9902]
+- Resolves: RHEL-9902
+  ([Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg)
+
 * Mon Jul 10 2023 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.42.20190303git
 - hpvd-vmbus_testing-fix-wrong-python-syntax-for-integer-va.patch [bz#2218931]
 - Resolves: bz#2218931

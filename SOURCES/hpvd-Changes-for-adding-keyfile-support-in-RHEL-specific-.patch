@@ -1,0 +1,67 @@
+From 1df9596722c093afd097fd7a9689092a5cee7d2a Mon Sep 17 00:00:00 2001
+From: Ani Sinha <anisinha@redhat.com>
+Date: Tue, 10 Oct 2023 11:50:30 +0530
+Subject: [PATCH 4/4] Changes for adding keyfile support in RHEL specific
+ script
+
+RH-Author: Ani Sinha <anisinha@redhat.com>
+RH-MergeRequest: 8: hv/hv_kvp_daemon:Support for keyfile based connection profile
+RH-Jira: RHEL-9902
+RH-Acked-by: Cathy Avery <cavery@redhat.com>
+RH-Acked-by: Miroslav Rezanina <mrezanin@redhat.com>
+RH-Commit: [4/4] b60a8d644b0e777373c92f4778c3d4560f6f2642 (anisinha/centos-hyperv-daemons)
+
+Some adjustments to the RHEL specific customization script in order to support
+Network Manager keyfiles. These changes were tested internally by Red Hat QE.
+These changes are mostly trivial and are not pushed upstream at this momemnt.
+
+Jira: https://issues.redhat.com/browse/RHEL-9902
+
+See also https://issues.redhat.com/browse/RHEL-14505
+
+Signed-off-by: Ani Sinha <anisinha@redhat.com>
+---
+ hv_set_ifconfig.sh | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/hv_set_ifconfig.sh b/hv_set_ifconfig.sh
+index 9c2ee30..0bdf2bc 100644
+--- a/hv_set_ifconfig.sh
++++ b/hv_set_ifconfig.sh
+@@ -74,19 +74,22 @@
+ # call.
+ #
+ 
++# This is RHEL specific bash script that configures NM keyfiles.
++# ifcfg files passed as the first argument to this script remains untouched.
+ 
++if [ -z "$2" ]; then
++    echo "No input NM keyfile. Exiting!"
++    exit 1
++fi
+ 
+-echo "IPV6INIT=yes" >> $1
+-echo "PEERDNS=yes" >> $1
+-echo "ONBOOT=yes" >> $1
++sed -i '/\[ipv4\]/a ignore-auto-dns=false' $2
++sed -i '/\[connection\]/a autoconnect=true' $2
+ 
+-#Unlike older sysconfig scripts, NetworkManager expects GATEWAYx=ipaddr for all values of x.
+-#So the first gateway is GATEWAY0 instead of GATEWAY. Other values should remain unchanged.
+-#Workaround this by replacing GATEWAY= with GATEWAY0=.
+-sed -i "s/GATEWAY=/GATEWAY0=/" $1
++filename="${2##*/}"
++chmod 600 $2
++cp $2 /etc/NetworkManager/system-connections/
+ 
+-cp $1 /etc/sysconfig/network-scripts/
++nmcli connection load "/etc/NetworkManager/system-connections/${filename}"
++nmcli connection up filename "/etc/NetworkManager/system-connections/${filename}"
+ 
+-filename="${1##*/}"
+-nmcli connection load "/etc/sysconfig/network-scripts/${filename}"
+-nmcli connection up filename "/etc/sysconfig/network-scripts/${filename}"
++exit 0
+-- 
+2.39.3
+
