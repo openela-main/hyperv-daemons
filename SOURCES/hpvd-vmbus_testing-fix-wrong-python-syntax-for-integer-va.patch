@@ -1,0 +1,55 @@
+From 520bfb6b8bc7cedc2dcb602a708c1357faf638b8 Mon Sep 17 00:00:00 2001
+From: Ani Sinha <anisinha@redhat.com>
+Date: Wed, 5 Jul 2023 18:44:34 +0530
+Subject: [PATCH 09/14] vmbus_testing: fix wrong python syntax for integer
+ value comparison
+
+RH-Author: Miroslav Rezanina <mrezanin@redhat.com>
+RH-MergeRequest: 9: Synchronize RHEL 9 changes to RHEL 10
+RH-Jira: RHEL-40107 RHEL-40679
+RH-Acked-by: Ani Sinha <anisinha@redhat.com>
+RH-Commit: [9/14] 261dfeef254265a966e7175766f366eaed782454 (mrezanin/centos-git-hyperv-daemons)
+
+It is incorrect in python to compare integer values using the "is" keyword. The
+"is" keyword in python is used to compare references to two objects, not their
+values. Newer version of python3 (version 3.8) throws a warning when such
+incorrect comparison is made. For value comparison, "==" should be used.
+
+Fix this in the code and suppress the following warning:
+
+/usr/sbin/vmbus_testing:167: SyntaxWarning: "is" with a literal. Did you mean "=="?
+
+Signed-off-by: Ani Sinha <anisinha@redhat.com>
+
+patch_name: hpvd-vmbus_testing-fix-wrong-python-syntax-for-integer-va.patch
+present_in_specfile: true
+location_in_specfile: 12
+---
+ vmbus_testing | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/vmbus_testing b/vmbus_testing
+index e721290..4467979 100755
+--- a/vmbus_testing
++++ b/vmbus_testing
+@@ -164,7 +164,7 @@ def recursive_file_lookup(path, file_map):
+ def get_all_devices_test_status(file_map):
+ 
+         for device in file_map:
+-                if (get_test_state(locate_state(device, file_map)) is 1):
++                if (get_test_state(locate_state(device, file_map)) == 1):
+                         print("Testing = ON for: {}"
+                               .format(device.split("/")[5]))
+                 else:
+@@ -203,7 +203,7 @@ def write_test_files(path, value):
+ def set_test_state(state_path, state_value, quiet):
+ 
+         write_test_files(state_path, state_value)
+-        if (get_test_state(state_path) is 1):
++        if (get_test_state(state_path) == 1):
+                 if (not quiet):
+                         print("Testing = ON for device: {}"
+                               .format(state_path.split("/")[5]))
+-- 
+2.39.3
+

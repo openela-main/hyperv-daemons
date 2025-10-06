@@ -1,0 +1,41 @@
+From 5b1094b6e8d7b5314ff32cef741e22bf2904d81f Mon Sep 17 00:00:00 2001
+From: Till Maas <timaas@redhat.com>
+Date: Mon, 13 Dec 2021 16:08:42 +0000
+Subject: [PATCH 04/14] hv_set_ifconfig.sh: Use nmcli commands
+
+RH-Author: Miroslav Rezanina <mrezanin@redhat.com>
+RH-MergeRequest: 9: Synchronize RHEL 9 changes to RHEL 10
+RH-Jira: RHEL-40107 RHEL-40679
+RH-Acked-by: Ani Sinha <anisinha@redhat.com>
+RH-Commit: [4/14] 657c30ec2f7f3cf90cd0950e45b2441280ef2581 (mrezanin/centos-git-hyperv-daemons)
+
+Instead of using deprecated ifup/ifdown commands, use nmcli commands.
+Taking the connection down is not necessary with NM, so don't do it.
+
+Resolves: #2026371
+
+patch_name: hpvd-hv_set_ifconfig.sh-Use-nmcli-commands.patch
+present_in_specfile: true
+location_in_specfile: 7
+---
+ hv_set_ifconfig.sh | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/hv_set_ifconfig.sh b/hv_set_ifconfig.sh
+index 3dd064c..5a64efe 100644
+--- a/hv_set_ifconfig.sh
++++ b/hv_set_ifconfig.sh
+@@ -57,8 +57,5 @@ echo "ONBOOT=yes" >> $1
+ 
+ cp $1 /etc/sysconfig/network-scripts/
+ 
+-
+-interface=$(echo $1 | awk -F - '{ print $2 }')
+-
+-/sbin/ifdown $interface 2>/dev/null
+-/sbin/ifup $interface 2>/dev/null
++nmcli connection load "/etc/sysconfig/network-scripts/$1"
++nmcli connection up filename "/etc/sysconfig/network-scripts/$1"
+-- 
+2.39.3
+

@@ -1,0 +1,48 @@
+From b4af57850a0f8171116eacb6e8a565ef009e9c4b Mon Sep 17 00:00:00 2001
+From: Mohammed Gamal <mgamal@redhat.com>
+Date: Thu, 17 Nov 2022 18:56:20 +0100
+Subject: [PATCH 07/14] tools: hv: Remove an extraneous "the"
+
+RH-Author: Miroslav Rezanina <mrezanin@redhat.com>
+RH-MergeRequest: 9: Synchronize RHEL 9 changes to RHEL 10
+RH-Jira: RHEL-40107 RHEL-40679
+RH-Acked-by: Ani Sinha <anisinha@redhat.com>
+RH-Commit: [7/14] 55fe13a9967894578468229dc925fb106bce7355 (mrezanin/centos-git-hyperv-daemons)
+
+commit f15f39fabed2248311607445ddfa6dba63abebb9
+Author: Jason Wang <wangborong@cdjrlc.com>
+Date:   Thu Aug 11 21:34:33 2022 +0800
+
+    tools: hv: Remove an extraneous "the"
+
+    There are two "the" in the text. Remove one.
+
+    Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+    Link: https://lore.kernel.org/r/20220811133433.10175-1-wangborong@cdjrlc.com
+    Signed-off-by: Wei Liu <wei.liu@kernel.org>
+
+Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+
+patch_name: hpvd-tools-hv-Remove-an-extraneous-the.patch
+present_in_specfile: true
+location_in_specfile: 10
+---
+ hv_kvp_daemon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hv_kvp_daemon.c b/hv_kvp_daemon.c
+index 1e6fd6c..c97c12e 100644
+--- a/hv_kvp_daemon.c
++++ b/hv_kvp_daemon.c
+@@ -44,7 +44,7 @@
+ 
+ /*
+  * KVP protocol: The user mode component first registers with the
+- * the kernel component. Subsequently, the kernel component requests, data
++ * kernel component. Subsequently, the kernel component requests, data
+  * for the specified keys. In response to this message the user mode component
+  * fills in the value corresponding to the specified key. We overload the
+  * sequence field in the cn_msg header to define our KVP message types.
+-- 
+2.39.3
+

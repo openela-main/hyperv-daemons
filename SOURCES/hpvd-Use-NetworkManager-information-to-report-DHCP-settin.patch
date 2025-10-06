@@ -1,0 +1,72 @@
+From 030b1f4b8b3ced6c1a034ddcf7a6ea9290077200 Mon Sep 17 00:00:00 2001
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+Date: Tue, 12 Nov 2024 15:27:29 +0100
+Subject: [PATCH 1/2] Use NetworkManager information to report DHCP settings
+
+RH-Author: Vitaly Kuznetsov <vkuznets@redhat.com>
+RH-MergeRequest: 11: Use NetworkManager information to report DNS/DHCP settings
+RH-Jira: RHEL-65434
+RH-Acked-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+RH-Acked-by: Miroslav Rezanina <mrezanin@redhat.com>
+RH-Commit: [1/2] dae341621eafa6cad0db12118fa1b3d66dae8dcc (vkuznets/hyperv-daemons)
+
+RHEL10 does not use ifcfg files so DHCP reporting does not work.
+Use NetworkManger information instead.
+
+Note, it is a bit unclear what 'DHCP' means, is it IPv4, IPv6 or
+both as there's a single parameter. Report 'Enabled' if any of the
+methods are set to auto.
+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ hv_get_dhcp_info.sh | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
+
+diff --git a/hv_get_dhcp_info.sh b/hv_get_dhcp_info.sh
+index 2f2a3c7..74f4be9 100644
+--- a/hv_get_dhcp_info.sh
++++ b/hv_get_dhcp_info.sh
+@@ -1,28 +1,27 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-# This example script retrieves the DHCP state of a given interface.
+-# In the interest of keeping the KVP daemon code free of distro specific
+-# information; the kvp daemon code invokes this external script to gather
+-# DHCP setting for the specific interface.
+-#
+ # Input: Name of the interface
+ #
+ # Output: The script prints the string "Enabled" to stdout to indicate
+ #	that DHCP is enabled on the interface. If DHCP is not enabled,
+ #	the script prints the string "Disabled" to stdout.
+ #
+-# Each Distro is expected to implement this script in a distro specific
+-# fashion. For instance, on Distros that ship with Network Manager enabled,
+-# this script can be based on the Network Manager APIs for retrieving DHCP
+-# information.
++# RHEL specific implementation, use NetworkManager information.
++
++[ ! -z "$1" ] || exit 1
+ 
+-if_file="/etc/sysconfig/network-scripts/ifcfg-"$1
++nmcon=$(nmcli -g GENERAL.CONNECTION device show "$1" 2>/dev/null)
++
++if [ -z "$nmcon" ]; then
++echo "Unknown"
++exit 0
++fi
+ 
+-dhcp=$(grep "dhcp" $if_file 2>/dev/null)
++ipv4=$(nmcli --fields ipv4.method connection show "$nmcon" 2>/dev/null | cut -d ':' -f 2 | xargs echo -n)
++ipv6=$(nmcli --fields ipv6.method connection show "$nmcon" 2>/dev/null | cut -d ':' -f 2 | xargs echo -n)
+ 
+-if [ "$dhcp" != "" ];
+-then
++if [ "$ipv4" = "auto" ] || [ "$ipv6" = "auto" ]; then
+ echo "Enabled"
+ else
+ echo "Disabled"
+-- 
+2.39.3
+
