@@ -13,7 +13,7 @@
 
 Name:     hyperv-daemons
 Version:  0
-Release:  0.49%{?snapver}%{?dist}
+Release:  0.50%{?snapver}%{?dist}
 Summary:  Hyper-V daemons suite
 
 License:  GPL-2.0-only
@@ -85,6 +85,8 @@ Patch12: hpvd-Changes-for-adding-keyfile-support-in-RHEL-specific-.patch
 Patch13: hpvd-Use-NetworkManager-information-to-report-DHCP-settin.patch
 # For RHEL-65434 - [Hyper-V][RHEL-10]KVP daemon inspects /etc/sysconfig/network-scripts/ifcfg-* files to get DHCP information
 Patch14: hpvd-Use-NetworkManager-information-to-report-DNS-setting.patch
+# For RHEL-95811 - [RHEL-10]Backport tools: hv: Enable debug logs for hv_kvp_daemon for RHEL 10
+Patch15: hpvd-tools-hv-Enable-debug-logs-for-hv_kvp_daemon.patch
 
 # Hyper-V is available only on x86 and aarch64 architectures
 # The base empty (a.k.a. virtual) package can not be noarch
@@ -316,6 +318,11 @@ fi
 %{_sbindir}/vmbus_testing
 
 %changelog
+* Fri Jun 20 2025 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.50.20220731git
+- hpvd-tools-hv-Enable-debug-logs-for-hv_kvp_daemon.patch [RHEL-95811]
+- Resolves: RHEL-95811
+  ([RHEL-10]Backport tools: hv: Enable debug logs for hv_kvp_daemon for RHEL 10)
+
 * Thu Nov 21 2024 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.49.20220731git
 - hpvd-Use-NetworkManager-information-to-report-DHCP-settin.patch [RHEL-65434]
 - hpvd-Use-NetworkManager-information-to-report-DNS-setting.patch [RHEL-65434]
