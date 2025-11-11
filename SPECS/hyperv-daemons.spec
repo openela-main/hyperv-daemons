@@ -13,7 +13,7 @@
 
 Name:     hyperv-daemons
 Version:  0
-Release:  0.43%{?snapver}%{?dist}
+Release:  0.44%{?snapver}%{?dist}
 Summary:  Hyper-V daemons suite
 
 License:  GPLv2
@@ -68,6 +68,8 @@ Patch14: hpvd-hv-hv_kvp_daemon-Some-small-fixes-for-handling-NM-ke.patch
 Patch15: hpvd-hv-hv_kvp_daemon-Handle-IPv4-and-Ipv6-combination-fo.patch
 # For RHEL-9902 - [Hyper-V][RHEL-9] hyperv-daemons write incompatible IPv6 prefix (IPV6NETMASK) in ifcfg
 Patch16: hpvd-Changes-for-adding-keyfile-support-in-RHEL-specific-.patch
+# For RHEL-95812 - [Hyper-V][RHEL-9]Backport tools: hv: Enable debug logs for hv_kvp_daemon for RHEL 9
+Patch17: hpvd-tools-hv-Enable-debug-logs-for-hv_kvp_daemon.patch
 
 # Source-git patches
 
@@ -183,6 +185,7 @@ cp -pvL %{SOURCE301} lsvmbus
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 %build
 # HYPERV KVP DAEMON
@@ -300,6 +303,11 @@ fi
 %{_sbindir}/vmbus_testing
 
 %changelog
+* Mon Jun 23 2025 Jon Maloy <jmaloy@redhat.com> - 0-0.44.20190303git
+- hpvd-tools-hv-Enable-debug-logs-for-hv_kvp_daemon.patch [RHEL-95812]
+- Resolves: RHEL-95812
+  ([Hyper-V][RHEL-9]Backport tools: hv: Enable debug logs for hv_kvp_daemon for RHEL 9)
+
 * Thu Apr 25 2024 Miroslav Rezanina <mrezanin@redhat.com> - 0-0.43.20190303git
 - hpvd-hv-hv_kvp_daemon-Support-for-keyfile-based-connectio.patch [RHEL-9902]
 - hpvd-hv-hv_kvp_daemon-Some-small-fixes-for-handling-NM-ke.patch [RHEL-9902]
